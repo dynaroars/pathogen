@@ -1,0 +1,21 @@
+input_specification:
+  name: "String Input"
+  description: |
+    String inputs for programs that process text data.
+    Focus on strings with repetitive patterns or edge cases.
+  
+  size_calculation: "length"
+  
+  valid_examples:
+    - "hello world"
+    - "aaaaaaaaaaaaaaaaaaa"
+    - "abcdefghijklmnopqrstuvwxyz"
+    - "The quick brown fox jumps over the lazy dog"
+    - "123456789012345678901234567890"
+    - "special!@#$%^&*()characters"
+    - "newlines\nand\ttabs\rhere"
+  
+  invalid_examples:
+    - ""
+    - "   "
+    - "\0null\0bytes\0"

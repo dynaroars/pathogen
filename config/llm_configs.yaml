@@ -1,0 +1,25 @@
+# LLM provider configurations for PathGen performance analysis
+# Optimized for speed and algorithmic understanding - supports Groq (free, fast) and OpenAI (paid, reliable)
+
+providers:
+  groq:
+    api_key_env: "GROQ_API_KEY"
+    base_url: "https://api.groq.com/openai/v1"
+    models:
+      - "llama2-70b-4096"
+      - "mixtral-8x7b-32768"
+      - "llama3-70b-8192"
+    default_model: "llama2-70b-4096"
+    rate_limit: 30  # requests per minute
+    description: "Ultra-fast inference with 70B parameter models. Free tier available."
+
+  openai:
+    api_key_env: "OPENAI_API_KEY"
+    base_url: "https://api.openai.com/v1"
+    models:
+      - "gpt-4"
+      - "gpt-4-turbo"
+      - "gpt-3.5-turbo"
+    default_model: "gpt-3.5-turbo"
+    rate_limit: 60  # requests per minute
+    description: "Reliable and powerful models with excellent algorithmic reasoning. Paid API."

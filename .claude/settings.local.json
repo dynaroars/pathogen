@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(python:*)",
+      "Bash(rm:*)",
+      "Bash(PYTHONPATH=/Users/dishimwe/apps/pathogen/src python -m pytest tests/ -v --tb=line)"
+    ],
+    "deny": [],
+    "defaultMode": "acceptEdits"
+  }
+}

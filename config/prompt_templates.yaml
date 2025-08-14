@@ -1,0 +1,141 @@
+# Prompt templates for LLM interactions
+# Contains system prompts, generation prompts, and refinement prompts used to guide LLMs in generating pathological inputs
+
+templates:
+  system_prompt: |
+    You are an expert at generating test inputs that maximize computational cost for the given program.
+
+    PROGRAM UNDER TEST:
+    {program_code}
+
+    INPUT SPECIFICATION:
+    {input_description}
+
+    INPUT METHOD: {input_method}
+    - If "stdin": Generate inputs as they would be provided to standard input
+    - If "file": Generate file contents or file paths as appropriate
+    - If "args": Generate command-line arguments (space-separated)
+    - If "custom": Follow the specific input format described above
+
+    OBJECTIVE:
+    Generate inputs that maximize runtime execution measured by instruction count (current best: {best_score})
+
+    CONSTRAINTS:
+    - Inputs must be valid according to the specification and input method
+    - Focus on edge cases and pathological inputs that increase instruction count
+    - Consider algorithmic complexity characteristics
+    - For external programs, think about inputs that might cause:
+      * CPU-intensive operations (nested loops, recursion)
+      * Worst-case algorithmic behavior (O(n²), O(n³), etc.)
+      * Deep recursion or excessive iteration
+      * Complex parsing or processing logic that requires many instructions
+
+    SUCCESSFUL EXAMPLES:
+    {successful_inputs}
+
+  generation_prompt: |
+    Based on the program analysis and previous successful inputs, generate {num_inputs} new test inputs.
+    
+    IMPORTANT SIZE REQUIREMENTS:
+    Generate inputs with these EXACT sizes: {target_sizes}
+    
+    CRITICAL CONSTRAINT:
+    You MUST focus on maximizing instruction count through ALGORITHMIC COMPLEXITY, not just input size.
+    Larger inputs should use patterns that trigger worse algorithmic behavior, not just more data.
+    
+    INPUT FORMAT:
+    {input_description}
+    
+    VALID EXAMPLES:
+    {valid_examples}
+    
+    INVALID EXAMPLES (NEVER GENERATE):
+    {invalid_examples}
+    
+    PREVIOUS BEST INPUTS:
+    {previous_best_with_size_and_score}
+    
+    Generate {num_inputs} inputs, one for each target size. Focus on patterns that maximize 
+    computational complexity rather than just increasing size.
+    
+    FORMAT: Return only the raw inputs, one per line, ordered by increasing size.
+
+  refinement_prompt: |
+    The following input achieved a high score of {score}:
+    {input}
+
+    Generate {num_variants} similar inputs that might achieve even higher instruction counts.
+    Focus on:
+    - Minor variations that amplify the instruction-heavy behavior
+    - Scaling the computationally expensive elements
+    - Edge cases around the successful pattern
+    - Combinations with other known instruction-intensive patterns
+
+    FORMAT: Return only the raw inputs, one per line.
+
+  external_program_analysis: |
+    You are analyzing an external program to understand what kinds of inputs might be computationally expensive.
+
+    PROGRAM INFORMATION:
+    Path: {program_path}
+    Type: {program_type}
+    Input Method: {input_method}
+
+    SOURCE CODE ANALYSIS:
+    {source_code}
+
+    Based on this analysis, identify:
+    1. Potential algorithmic complexity bottlenecks that increase instruction count
+    2. Input patterns that might trigger worst-case CPU behavior
+    3. CPU-intensive operations (nested loops, recursion, complex computations)
+    4. Edge cases in input parsing or validation that require many instructions
+
+    Provide insights about what kinds of inputs would maximize instruction execution.
+
+  input_format_analysis: |
+    Analyze the expected input format for this program and suggest pathological test cases.
+
+    INPUT DESCRIPTION: {input_description}
+    INPUT METHOD: {input_method}
+    PROGRAM TYPE: {program_type}
+
+    Generate specific examples of inputs that might cause high instruction counts:
+    - Boundary conditions (empty, maximum size, minimum size)
+    - Malformed or edge-case inputs that require extensive processing
+    - Repetitive patterns that might trigger O(n²) or worse behavior
+    - Deeply nested or recursive structures that force many iterations
+    - Inputs that stress parsing or processing logic with complex operations
+
+    Return 5-10 concrete example inputs that follow the format but maximize computational cost.
+
+  source_code_insights: |
+    Extract performance-relevant insights from this source code:
+
+    {source_code}
+
+    Focus on identifying:
+    1. Loops and their complexity characteristics that affect instruction count
+    2. Recursive functions and their termination conditions
+    3. Data structure operations and their computational costs
+    4. Input parsing and validation logic that requires many instructions
+    5. Complex computations and algorithmic operations
+    6. Conditional branches that lead to expensive code paths
+
+    Suggest input patterns that would maximize the instruction count of this code.
+
+  mutation_prompt: |
+    Mutate the following high-scoring input to create new variants:
+
+    Original input: {original_input}
+    Score: {score}
+    Input method: {input_method}
+
+    Create mutations that:
+    - Preserve the core pattern that made this input successful
+    - Introduce variations that might amplify the instruction count
+    - Scale up computationally intensive elements
+    - Combine with other known instruction-heavy patterns
+
+    Generate {num_mutations} mutations, focusing on variations that maintain validity while potentially increasing instruction count.
+
+    FORMAT: Return only the mutated inputs, one per line.

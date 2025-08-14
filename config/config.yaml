@@ -1,0 +1,152 @@
+# Main configuration file for PathoGen
+# Defines evolutionary parameters, resource monitoring settings, LLM configuration, and target program settings
+
+pathogen:
+  # Evolutionary parameters
+  max_iterations: 100
+  population_size: 10
+  elite_size: 3
+  mutation_rate: 0.3
+  crossover_rate: 0.7
+
+  # Runtime execution monitoring
+  timeout_seconds: 30
+  resource_metrics:
+    - instruction_count
+
+  # Input generation settings
+  input_generation:
+    inputs_per_iteration: 15
+    size_progression:
+      start_size: 10
+      increment: 15
+  
+  # Input validation settings
+  input_validation:
+    execution_based: true
+    retry_on_format_error: true
+    max_format_retries: 2
+
+  # Logging
+  log_level: INFO
+  output_dir: "./results"
+  save_intermediate: true
+
+  # LLM settings
+  llm:
+    provider: "groq"  # groq (free, fast) or openai (paid, reliable)
+    model: "llama2-70b-4096"
+    temperature: 0.7
+    max_tokens: 1000
+
+  # Target program settings
+  target:
+    type: "python"  # python, binary, docker, external
+    timeout: 10
+    retry_count: 3
+
+# External program configuration
+external_programs:
+  # Example configurations for different types of external programs
+  
+  # Generic external program template
+  generic:
+    program_path: "/path/to/program"
+    input_method: "stdin"  # stdin, file, args, custom
+    input_description: "Description of expected input format"
+    working_directory: null  # Optional: working directory
+    source_code_path: null   # Optional: path to source code for LLM context
+    command_args: []         # Optional: additional command line arguments
+    environment_variables: {}  # Optional: environment variables
+    auto_detect: true        # Whether to auto-detect program characteristics
+    timeout_seconds: 30
+
+  # C/C++ program example
+  c_program:
+    program_path: "./my_c_program"
+    input_method: "stdin"
+    input_description: "Integers separated by spaces or newlines"
+    source_code_path: "./my_c_program.c"
+    auto_detect: true
+    timeout_seconds: 10
+
+  # Python script example
+  python_script:
+    program_path: "python3"
+    command_args: ["./my_script.py"]
+    input_method: "stdin"
+    input_description: "JSON objects, one per line"
+    source_code_path: "./my_script.py"
+    auto_detect: true
+    timeout_seconds: 30
+
+  # Java program example
+  java_program:
+    program_path: "java"
+    command_args: ["-cp", ".", "MyClass"]
+    input_method: "stdin"
+    input_description: "Command line arguments followed by stdin data"
+    source_code_path: "./MyClass.java"
+    environment_variables:
+      JAVA_OPTS: "-Xmx256m"
+    auto_detect: true
+    timeout_seconds: 45
+
+  # Shell script example
+  shell_script:
+    program_path: "./process_data.sh"
+    input_method: "file"
+    input_description: "Data file path as argument"
+    source_code_path: "./process_data.sh"
+    working_directory: "/tmp"
+    auto_detect: true
+    timeout_seconds: 60
+
+  # Binary with file input example
+  file_processor:
+    program_path: "./file_processor"
+    input_method: "file"
+    input_description: "Binary data file"
+    command_args: ["--mode", "analyze"]
+    auto_detect: true
+    timeout_seconds: 20
+
+  # Program with command line args
+  cli_tool:
+    program_path: "./cli_tool"
+    input_method: "args"
+    input_description: "Command line flags and parameters"
+    auto_detect: true
+    timeout_seconds: 15
+
+# Program detection settings
+program_detection:
+  # Maximum file size to analyze (bytes)
+  max_file_size: 1048576  # 1MB
+  
+  # Maximum lines of source code to read
+  max_source_lines: 1000
+  
+  # Timeout for program analysis (seconds)
+  analysis_timeout: 10
+  
+  # Whether to enable source code analysis
+  analyze_source: true
+  
+  # Whether to test input methods automatically
+  test_input_methods: true
+  
+  # Search patterns for finding source code
+  source_extensions:
+    - ".c"
+    - ".cpp" 
+    - ".cc"
+    - ".cxx"
+    - ".h"
+    - ".hpp"
+    - ".py"
+    - ".java"
+    - ".js"
+    - ".go"
+    - ".rs"
+    - ".sh"

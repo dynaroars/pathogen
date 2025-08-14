@@ -1,0 +1,23 @@
+input_specification:
+  name: "JSON Data Structure"
+  description: |
+    Valid JSON data structures that can be parsed and processed.
+    Focus on deeply nested or complex structures.
+  
+  size_calculation: "bytes"
+  
+  valid_examples:
+    - '{"key": "value"}'
+    - '{"numbers": [1, 2, 3, 4, 5]}'
+    - '{"nested": {"deep": {"very": {"deep": "value"}}}}'
+    - '[{"id": 1, "name": "test"}, {"id": 2, "name": "test2"}]'
+    - '{"array": [1, 2, 3], "object": {"key": "value"}, "boolean": true}'
+    - '{"large_array": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]}'
+  
+  invalid_examples:
+    - '{"invalid": json}'
+    - '{key: "missing_quotes"}'
+    - '{"trailing": "comma",}'
+    - 'not json at all'
+    - '{"unclosed": "object"'
+    - '[1, 2, 3,]'

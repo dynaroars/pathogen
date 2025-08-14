@@ -1,0 +1,33 @@
+input_specification:
+  name: "Regex Pattern and Text JSON"
+  description: |
+    JSON object containing a regex pattern and text to match against.
+    Focus on patterns that cause catastrophic backtracking.
+  
+  size_calculation: "combined_length"
+  
+  valid_examples:
+    - '{"pattern": "(a+)+b", "text": "aaaaaaaaaaaaaaaaaaac"}'
+    - '{"pattern": "^(a|a)*$", "text": "aaaaaaaaaaaaaaaaaaaab"}'
+    - '{"pattern": "(x+x+)+y", "text": "xxxxxxxxxxxxxxxxxxz"}'
+    - '{"pattern": "a.*b.*c.*d", "text": "abcdabcdabcdabcd"}'
+    - '{"pattern": "\\d+", "text": "123abc456"}'
+    - '{"pattern": "[a-z]+@[a-z]+\\.[a-z]+", "text": "test@example.com"}'
+  
+  invalid_examples:
+    - "not json"
+    - '{"pattern": "test"}'
+    - '{"text": "missing pattern"}'
+    - ""
+    - '{"pattern": "[", "text": "invalid regex"}'
+
+# Custom size function  
+def combined_length(input_str: str) -> int:
+    import json
+    try:
+        data = json.loads(input_str)
+        pattern_len = len(data.get('pattern', ''))
+        text_len = len(data.get('text', ''))
+        return pattern_len + text_len
+    except:
+        return len(input_str)
